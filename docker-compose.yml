@@ -1,0 +1,30 @@
+services:
+
+  llm-dnd:
+    container_name: llm-dnd
+    build: .
+    ports:
+      - 8501:8501
+    environment:
+      - OLLAMA_API_ENDPOINT=http://ollama:7869/api/generate
+    depends:
+      - ollama
+    networks:
+      - llm-dnd-network
+
+  ollama:
+    image: ollama/ollama:latest
+    volumes:
+      - /opt/ollama/data:/root/.ollama
+    container_name: ollama
+    pull_policy: always
+    tty: true
+    restart: always
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+      - OLLAMA_HOST=0.0.0.0
+    networks:
+      - llm-dnd-network
+
+networks:
+  llm-dnd-network:
